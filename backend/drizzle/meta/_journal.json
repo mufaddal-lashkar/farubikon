@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1772245413227,
+      "tag": "0000_light_blonde_phantom",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772246690333,
+      "tag": "0001_mature_the_anarchist",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772303063125,
+      "tag": "0002_cheerful_serpent_society",
+      "breakpoints": true
+    }
+  ]
+}

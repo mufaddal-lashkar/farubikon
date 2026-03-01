@@ -1,0 +1,1 @@
+ALTER TABLE "tickets" ADD COLUMN "reporter_id" varchar(255);
