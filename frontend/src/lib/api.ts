@@ -1,5 +1,12 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
+// The backend always wraps responses in { success, data, message }
+interface ApiResponse<T> {
+    success: boolean;
+    data: T;
+    message: string;
+}
+
 async function request<T>(
     path: string,
     options: RequestInit = {}
@@ -29,25 +36,33 @@ export const api = {
                 `/tickets${query}`
             );
         },
-        get: (id: string) =>
-            request<import("@/types").Ticket>(`/tickets/${id}`),
-        create: (data: unknown) =>
-            request<import("@/types").Ticket>("/tickets", {
+        get: async (id: string) => {
+            const res = await request<ApiResponse<import("@/types").Ticket>>(`/tickets/${id}`);
+            return res.data;
+        },
+        create: async (data: unknown) => {
+            const res = await request<ApiResponse<import("@/types").Ticket>>("/tickets", {
                 method: "POST",
                 body: JSON.stringify(data),
-            }),
-        update: (id: string, data: unknown) =>
-            request<import("@/types").Ticket>(`/tickets/${id}`, {
+            });
+            return res.data;
+        },
+        update: async (id: string, data: unknown) => {
+            const res = await request<ApiResponse<import("@/types").Ticket>>(`/tickets/${id}`, {
                 method: "PUT",
                 body: JSON.stringify(data),
-            }),
+            });
+            return res.data;
+        },
         delete: (id: string) =>
             request<{ success: boolean }>(`/tickets/${id}`, { method: "DELETE" }),
-        updateStatus: (id: string, status: string) =>
-            request<import("@/types").Ticket>(`/tickets/${id}/status`, {
+        updateStatus: async (id: string, status: string) => {
+            const res = await request<ApiResponse<import("@/types").Ticket>>(`/tickets/${id}/status`, {
                 method: "PATCH",
                 body: JSON.stringify({ status }),
-            }),
+            });
+            return res.data;
+        },
         classify: (id: string) =>
             request<{ ticket: import("@/types").Ticket; classification: unknown }>(
                 `/tickets/${id}/classify`,
@@ -55,12 +70,16 @@ export const api = {
             ),
     },
     comments: {
-        list: (ticketId: string) =>
-            request<import("@/types").Comment[]>(`/tickets/${ticketId}/comments`),
-        create: (ticketId: string, content: string) =>
-            request<import("@/types").Comment>(`/tickets/${ticketId}/comments`, {
+        list: async (ticketId: string) => {
+            const res = await request<ApiResponse<import("@/types").Comment[]>>(`/tickets/${ticketId}/comments`);
+            return res.data;
+        },
+        create: async (ticketId: string, content: string) => {
+            const res = await request<ApiResponse<import("@/types").Comment>>(`/tickets/${ticketId}/comments`, {
                 method: "POST",
                 body: JSON.stringify({ content }),
-            }),
+            });
+            return res.data;
+        },
     },
 };

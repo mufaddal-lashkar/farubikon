@@ -30,10 +30,11 @@ export const createTicketSchema = z.object({
         .min(10, "Description must be at least 10 characters"),
     reporterName: z
         .string()
-        .min(1, "Reporter name is required"),
+        .optional(),
     reporterEmail: z
         .string()
-        .email("Reporter email must be a valid email address"),
+        .email("Reporter email must be a valid email address")
+        .optional(),
     status: ticketStatusEnum.default("open"),
 });
 

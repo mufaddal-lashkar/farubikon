@@ -1,26 +1,25 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Navbar } from "@/components/ui/Navbar";
 
 export const metadata: Metadata = {
-  title: "Support Ticket System",
-  description: "Multi-tenant AI-powered support tickets",
+    title: "Farubikon — AI Support Tickets",
+    description: "Multi-tenant AI-powered support ticket system",
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className="bg-gray-50 text-gray-900 antialiased">
-        <nav className="bg-white border-b border-gray-200 px-6 py-3 mb-2">
-          <a href="/tickets" className="text-blue-600 font-medium text-sm">
-            Support Tickets
-          </a>
-        </nav>
-        {children}
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body className="bg-[#f8f9fb] text-gray-900 antialiased">
+                <Navbar />
+                <main className="min-h-[calc(100vh-3.5rem)]">
+                    {children}
+                </main>
+            </body>
+        </html>
+    );
 }

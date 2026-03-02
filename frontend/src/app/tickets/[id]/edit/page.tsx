@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, use } from "react";
 import { useTicketStore } from "@/store/ticketStore";
 import { TicketForm } from "@/components/tickets/TicketForm";
 
 export default function EditTicketPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
+    const { id } = use(params);
     const { selectedTicket, fetchTicketById, isLoading } = useTicketStore();
 
     useEffect(() => {
-        fetchTicketById(params.id);
-    }, [params.id]);
+        fetchTicketById(id);
+    }, [id]);
 
     if (isLoading) {
         return (

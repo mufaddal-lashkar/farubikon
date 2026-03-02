@@ -1,6 +1,8 @@
 import { Elysia } from "elysia";
 import { auth } from "../auth";
 import { db } from "../db"
+import { member } from "../db/schema";
+import { eq, and } from "drizzle-orm";
 
 export type UserRole = "admin" | "member";
 
@@ -17,15 +19,18 @@ export const authPlugin = new Elysia({ name: "auth-plugin" })
         let role: UserRole | null = null;
 
         if (orgId && userId) {
-            const membership = await db.query.members.findFirst({
-                where: (m, { and, eq }) =>
+            const membership = await db
+                .select()
+                .from(member)
+                .where(
                     and(
-                        eq(m.userId, userId),
-                        eq(m.organizationId, orgId)
-                    ),
-            });
+                        eq(member.userId, userId),
+                        eq(member.organizationId, orgId)
+                    )
+                )
+                .limit(1);
 
-            role = membership?.role as UserRole ?? null;
+            role = (membership[0]?.role as UserRole) ?? null;
         }
 
         return {
@@ -35,6 +40,7 @@ export const authPlugin = new Elysia({ name: "auth-plugin" })
             userRole: role,
         };
     });
+
 
 // Use this on any route that requires a logged-in user with an active org
 export const requireAuth = (ctx: {

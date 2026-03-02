@@ -5,18 +5,20 @@ import { authPlugin } from "./middleware/auth";
 import { ticketRoutes } from "./routes/tickets";
 import { commentRoutes } from "./routes/comments";
 import { aiRoutes } from "./routes/ai";
+import { auth } from "./auth";
 
 const app = new Elysia()
-  .use(cors({
-    origin: "http://localhost:3001",
-    credentials: true,
-  }))
-  .use(swagger())
-  .use(authPlugin)
-  .use(ticketRoutes)
-  .use(commentRoutes)
-  .use(aiRoutes)
-  .get("/health", () => ({ status: "ok" }))
-  .listen(process.env.PORT ?? 3001);
+    .use(cors({
+        origin: ["http://localhost:3000", "http://localhost:3001"], // Added 3000 for standard Next.js dev
+        credentials: true,
+    }))
+    .use(swagger())
+    .all("/api/auth/*", (ctx) => auth.handler(ctx.request))
+    .use(authPlugin)
+    .use(ticketRoutes)
+    .use(commentRoutes)
+    .use(aiRoutes)
+    .get("/health", () => ({ status: "ok" }))
+    .listen(process.env.PORT ?? 3001);
 
 console.log(`Backend running at http://localhost:${app.server?.port}`);

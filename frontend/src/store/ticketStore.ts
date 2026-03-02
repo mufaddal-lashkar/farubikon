@@ -112,6 +112,9 @@ export const useTicketStore = create<TicketState>((set, get) => ({
         try {
             const newTicket = await api.tickets.create(data);
 
+            // Auto-classify in the background
+            api.tickets.classify(newTicket.id).catch(() => { });
+
             // Add to top of list without refetching
             set((state) => ({
                 tickets: [newTicket, ...state.tickets],
@@ -133,6 +136,9 @@ export const useTicketStore = create<TicketState>((set, get) => ({
 
         try {
             const updated = await api.tickets.update(id, data);
+
+            // Auto-classify in the background
+            api.tickets.classify(id).catch(() => { });
 
             // Update in list and selectedTicket if it matches
             set((state) => ({

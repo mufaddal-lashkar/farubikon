@@ -1,7 +1,7 @@
 import { Elysia } from "elysia";
 import { eq, and, ilike, SQL, sql } from "drizzle-orm";
 import { db } from "../db";
-import { tickets } from "../db/schema";
+import { tickets, users } from "../db/schema";
 import {
     createTicketSchema,
     updateTicketSchema,
@@ -101,10 +101,32 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
             return new Response("Body data validation failed", { status: 400 })
         }
 
+        // If reporterName/Email are not provided, fetch them from the user's account
+        let { reporterName, reporterEmail } = parsed.data;
+
+        if (!reporterName || !reporterEmail) {
+            const userResult = await db
+                .select()
+                .from(users)
+                .where(eq(users.id, userId!))
+                .limit(1);
+
+            if (userResult.length > 0) {
+                reporterName = reporterName || userResult[0]!.name;
+                reporterEmail = reporterEmail || userResult[0]!.email;
+            }
+        }
+
+        if (!reporterName || !reporterEmail) {
+            return new Response("Could not determine reporter info", { status: 400 });
+        }
+
         const [newTicket] = await db
             .insert(tickets)
             .values({
                 ...parsed.data,
+                reporterName,
+                reporterEmail,
                 reporterId: userId,
                 organizationId: organizationId,  // ← always injected from session
             })
@@ -174,9 +196,7 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
         if (!requireAuth({ session, organizationId, userId } as any)) return;
         if (!organizationId) return new Response("Organization required", { status: 403 });
 
-        // RBAC: admin only
-        if (!requireAdmin(userRole)) return;
-
+        // RBAC: owner or admin
         const existing = await db
             .select()
             .from(tickets)
@@ -191,6 +211,13 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
         if (existing.length === 0) {
             return new Response("Ticket not found", { status: 404 })
         }
+
+        const ticket = existing[0]
+        if (!ticket?.reporterId) {
+            return new Response("Invalid ticket reporter", { status: 400 });
+        }
+
+        if (!requireOwnerOrAdmin(ticket.reporterId, userId!, userRole)) return;
 
         await db
             .delete(tickets)

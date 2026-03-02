@@ -1,13 +1,14 @@
 import { TicketDetail } from "@/components/tickets/TicketDetail";
 
-export default function TicketDetailPage({
+export default async function TicketDetailPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
+    const { id } = await params;
     return (
         <main className="max-w-4xl mx-auto px-4 py-8">
-            <TicketDetail id={params.id} />
+            <TicketDetail id={id} />
         </main>
     );
 }
