@@ -17,7 +17,6 @@ export function useSSEStream(): UseSSEStreamReturn {
     const [isStreaming, setIsStreaming] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // AbortController ref — persists across renders, used to cancel the fetch
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const stopStream = useCallback(() => {
@@ -35,14 +34,12 @@ export function useSSEStream(): UseSSEStreamReturn {
     }, [stopStream]);
 
     const startStream = useCallback(async (url: string) => {
-        // Cancel any existing stream before starting a new one
         stopStream();
 
         setData("");
         setError(null);
         setIsStreaming(true);
 
-        // Create a fresh AbortController for this stream
         const controller = new AbortController();
         abortControllerRef.current = controller;
 
@@ -60,7 +57,6 @@ export function useSSEStream(): UseSSEStreamReturn {
                 throw new Error("Response has no readable body");
             }
 
-            // Read the stream chunk by chunk
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let buffer = "";
@@ -70,19 +66,16 @@ export function useSSEStream(): UseSSEStreamReturn {
 
                 if (done) break;
 
-                // Decode the chunk and add to buffer
                 buffer += decoder.decode(value, { stream: true });
 
-                // SSE lines are separated by double newlines — process complete events
                 const lines = buffer.split("\n\n");
 
-                // Keep the last incomplete chunk in the buffer
                 buffer = lines.pop() ?? "";
 
                 for (const line of lines) {
                     if (!line.startsWith("data: ")) continue;
 
-                    const jsonStr = line.slice(6).trim(); // remove "data: " prefix
+                    const jsonStr = line.slice(6).trim();
 
                     try {
                         const parsed: { content: string; done: boolean; error?: string } =
@@ -100,17 +93,14 @@ export function useSSEStream(): UseSSEStreamReturn {
                         }
 
                         if (parsed.content) {
-                            // Accumulate content — don't replace, append
                             setData((prev) => prev + parsed.content);
                         }
                     } catch {
-                        // Skip malformed JSON chunks — don't crash the whole stream
                         console.warn("Failed to parse SSE chunk:", jsonStr);
                     }
                 }
             }
         } catch (err) {
-            // AbortError is expected when stopStream() is called — not a real error
             if (err instanceof Error && err.name === "AbortError") {
                 return;
             }

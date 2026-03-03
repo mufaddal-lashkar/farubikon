@@ -3,7 +3,6 @@ from src.models import ClassifyRequest, ClassifyResponse
 from src.llm import get_llm
 from src.prompts import CLASSIFY_PROMPT
 
-
 async def classify_ticket(request: ClassifyRequest) -> ClassifyResponse:
     """
     Calls the LLM with the classification prompt and parses the JSON response.

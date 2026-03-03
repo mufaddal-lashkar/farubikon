@@ -192,7 +192,7 @@ export const useTicketStore = create<TicketState>((set, get) => ({
     setFilters: (newFilters: Partial<TicketFilters>) => {
         set((state) => ({
             filters: { ...state.filters, ...newFilters },
-            pagination: { ...state.pagination, page: 1 }, // reset to page 1 on filter change
+            pagination: { ...state.pagination, page: 1 },
         }));
         get().fetchTickets();
     },

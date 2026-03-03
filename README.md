@@ -33,7 +33,7 @@ The brain of the system, handling ticket classification and response suggestions
    ```
 5. Run service:
    ```bash
-   python src/main.py
+   python -m src.main
    ```
    *Service runs on `http://localhost:8000`*
 

@@ -32,7 +32,7 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
 
         const { status, priority, category, search, page, limit } = parsed.data;
 
-        // Build filters — organizationId is ALWAYS the first condition
+        // Build filters
         const filters: SQL[] = [eq(tickets.organizationId, organizationId!)];
 
         if (status) filters.push(eq(tickets.status, status));
@@ -75,7 +75,7 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
             .where(
                 and(
                     eq(tickets.id, params.id),
-                    eq(tickets.organizationId, organizationId)  // ← org scope
+                    eq(tickets.organizationId, organizationId)
                 )
             )
             .limit(1);
@@ -128,7 +128,7 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
                 reporterName,
                 reporterEmail,
                 reporterId: userId,
-                organizationId: organizationId,  // ← always injected from session
+                organizationId: organizationId,
             })
             .returning();
 
@@ -179,7 +179,7 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
             .where(
                 and(
                     eq(tickets.id, params.id),
-                    eq(tickets.organizationId, organizationId)  // ← double-check on update too
+                    eq(tickets.organizationId, organizationId)
                 )
             )
             .returning();
@@ -224,7 +224,7 @@ export const ticketRoutes = new Elysia({ prefix: "/tickets" })
             .where(
                 and(
                     eq(tickets.id, params.id),
-                    eq(tickets.organizationId, organizationId)  // ← org scope on delete
+                    eq(tickets.organizationId, organizationId)
                 )
             );
 

@@ -66,10 +66,8 @@ export const requireAuth = (ctx: {
 // Call these inside route handlers after requireAuth passes
 export const requireAdmin = (
     userRole: UserRole | null,
-    // error: (status: number, message: string) => void
 ): boolean => {
     if (userRole !== "admin") {
-        // error(403, "Forbidden: admin access required");
         return false;
     }
     return true;
@@ -84,7 +82,6 @@ export const requireOwnerOrAdmin = (
     const isAdmin = userRole === "admin";
 
     if (!isOwner && !isAdmin) {
-        // throw new Error("Forbidden: you do not have permission to modify this resource");
         return false;
     }
     return true;

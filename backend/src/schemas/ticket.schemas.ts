@@ -19,7 +19,6 @@ export const commentToneEnum = z.enum([
 ]);
 
 // ── Ticket Schemas ─────────────────────────────────────────────────────────
-
 export const createTicketSchema = z.object({
     title: z
         .string()
@@ -51,7 +50,6 @@ export const assignTicketSchema = z.object({
 });
 
 // ── Comment Schemas ────────────────────────────────────────────────────────
-
 export const createCommentSchema = z.object({
     content: z
         .string()
@@ -60,7 +58,6 @@ export const createCommentSchema = z.object({
 });
 
 // ── Query Parameter Schemas ────────────────────────────────────────────────
-
 export const ticketQuerySchema = z.object({
     status: ticketStatusEnum.optional(),
     priority: ticketPriorityEnum.optional(),
@@ -79,7 +76,6 @@ export const ticketQuerySchema = z.object({
 });
 
 // ── Inferred Types ─────────────────────────────────────────────────────────
-
 export type CreateTicketInput = z.infer<typeof createTicketSchema>;
 export type UpdateTicketInput = z.infer<typeof updateTicketSchema>;
 export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;

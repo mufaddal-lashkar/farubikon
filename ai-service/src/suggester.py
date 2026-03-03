@@ -5,7 +5,6 @@ from src.models import SuggestRequest
 from src.llm import get_llm
 from src.prompts import SUGGEST_PROMPT
 
-
 def _format_comments(comments) -> str:
     """Format existing comments into readable text for the prompt."""
     if not comments:
@@ -16,7 +15,6 @@ def _format_comments(comments) -> str:
         author = "AI" if c.is_ai_generated else f"User ({c.author_id})"
         lines.append(f"{i}. [{author}]: {c.content}")
     return "\n".join(lines)
-
 
 async def stream_suggested_response(
     request: SuggestRequest,

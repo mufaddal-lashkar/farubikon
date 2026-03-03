@@ -10,12 +10,10 @@ from src.suggester import stream_suggested_response
 
 app = FastAPI(title="AI Classification Service")
 
-
 # ── Health check ───────────────────────────────────────────────────────────
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
 
 # ── POST /classify ─────────────────────────────────────────────────────────
 @app.post("/classify", response_model=ClassifyResponse)
@@ -26,7 +24,6 @@ async def classify(request: ClassifyRequest):
     except RuntimeError as e:
         from fastapi import HTTPException
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # ── POST /suggest-response ─────────────────────────────────────────────────
 @app.post("/suggest-response")
@@ -40,7 +37,6 @@ async def suggest_response(request: SuggestRequest):
             "X-Accel-Buffering": "no",  # disables nginx buffering if behind proxy
         },
     )
-
 
 # ── Entry point ────────────────────────────────────────────────────────────
 if __name__ == "__main__":

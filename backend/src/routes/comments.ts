@@ -35,7 +35,7 @@ export const commentRoutes = new Elysia({ prefix: "/tickets" })
             .where(
                 and(
                     eq(ticketComments.ticketId, params.id),
-                    eq(ticketComments.organizationId, organizationId)  // ← org scope
+                    eq(ticketComments.organizationId, organizationId)
                 )
             );
 
@@ -82,7 +82,7 @@ export const commentRoutes = new Elysia({ prefix: "/tickets" })
                 ticketId: params.id,
                 content: parsed.data.content,
                 authorId: userId!,
-                organizationId: organizationId,  // ← always from session
+                organizationId: organizationId,
                 isAiGenerated: false,
             })
             .returning();

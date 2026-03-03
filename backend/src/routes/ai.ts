@@ -67,7 +67,6 @@ export const aiRoutes = new Elysia({ prefix: "/tickets" })
     })
 
     // ── GET /tickets/:id/suggest-response ──────────────────────────────────
-    // ⚠️ This is the SSE proxy — hand-write this carefully
     .get("/:id/suggest-response", async ({ organizationId, userId, session, params, query, set }) => {
         if (!requireAuth({ session, organizationId, userId } as any)) return;
         if (!organizationId) return new Response("Organization required", { status: 403 });
