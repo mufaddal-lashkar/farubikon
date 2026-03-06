@@ -40,6 +40,7 @@ export default function SignupPage() {
 
                 if (orgError) {
                     setError("Account created, but organization setup failed. Please contact support.");
+                    console.log("orgError :: ", orgError);
                     return;
                 }
 
