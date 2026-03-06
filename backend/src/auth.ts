@@ -23,6 +23,12 @@ export const auth = betterAuth({
     },
     plugins: [organization()],
     secret: process.env.BETTER_AUTH_SECRET!,
+    advanced: {
+        defaultCookieAttributes: {
+            sameSite: "none",
+            secure: true,
+        }
+    },
     trustedOrigins: (process.env.CORS_ORIGINS ?? "http://localhost:3000,http://localhost:3001").split(","),
 });
 

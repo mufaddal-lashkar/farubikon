@@ -19,6 +19,7 @@ export default function SignupPage() {
         setError("");
 
         try {
+            console.log("Starting signup process for:", email);
             const { data, error: signupError } = await authClient.signUp.email({
                 email,
                 password,
@@ -27,33 +28,43 @@ export default function SignupPage() {
             });
 
             if (signupError) {
+                console.error("Signup failed:", signupError);
                 setError(signupError.message || "Signup failed");
                 return;
             }
 
+            console.log("Signup successful! User data:", data);
+
             // Create organization after signup
             if (data) {
+                console.log("Attempting to create organization:", orgName);
                 const { data: orgData, error: orgError } = await authClient.organization.create({
                     name: orgName,
                     slug: orgName.toLowerCase().replace(/\s+/g, "-"),
                 });
 
                 if (orgError) {
+                    console.error("Organization creation failed:", orgError);
+                    console.log("Current session status:", await authClient.getSession());
                     setError("Account created, but organization setup failed. Please contact support.");
-                    console.log("orgError :: ", orgError);
                     return;
                 }
 
+                console.log("Organization created successfully:", orgData);
+
                 // Set the newly created org as the active organization on the session
                 if (orgData) {
+                    console.log("Setting active organization:", orgData.id);
                     await authClient.organization.setActive({
                         organizationId: orgData.id,
                     });
                 }
 
+                console.log("Signup flow complete! Redirecting...");
                 router.push("/tickets");
             }
         } catch (err: any) {
+            console.error("Unexpected error during signup:", err);
             setError(err.message || "An unexpected error occurred");
         } finally {
             setLoading(false);
