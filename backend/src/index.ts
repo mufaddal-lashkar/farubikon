@@ -9,7 +9,7 @@ import { auth } from "./auth";
 
 const app = new Elysia()
     .use(cors({
-        origin: ["http://localhost:3000", "http://localhost:3001"], // Added 3000 for standard Next.js dev
+        origin: (process.env.CORS_ORIGINS ?? "http://localhost:3000,http://localhost:3001").split(","),
         credentials: true,
     }))
     .use(swagger())

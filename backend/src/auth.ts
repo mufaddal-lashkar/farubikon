@@ -23,7 +23,7 @@ export const auth = betterAuth({
     },
     plugins: [organization()],
     secret: process.env.BETTER_AUTH_SECRET!,
-    trustedOrigins: ["http://localhost:3000", "http://localhost:3001"],
+    trustedOrigins: (process.env.CORS_ORIGINS ?? "http://localhost:3000,http://localhost:3001").split(","),
 });
 
 // The session type BetterAuth gives us after validation
